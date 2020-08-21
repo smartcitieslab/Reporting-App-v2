@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Smart City</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+   
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color:#000fb5;
+      }
+      h1{
+          text-align: center;
+          font-size:30px;
+          color:white;
+          padding-top:10px;
+          border: 5px solid white;
+          margin-bottom: 7px;
+      }
+      .options{
+          background-color:#000fb5;
+          border: 2px solid white;
+          color: white;
+          font-weight: bold;
+          position: relative;
+          left: 22%;
+          width: 15%;
+            height: 7%;
+          text-align:center;
+          margin-bottom: 7px;
+      }
+    #left_select{
+        margin-right: 5%;
+    }
+     #right_select{
+        margin-left: 5%;
+    }
+    </style>
+    <link src="../node_modules/bootstrap/dist/css/bootstrap.min.css"></link>
+  </head>
+  <body onload="routSelect('all')">
+      <h1>Smart City</h1>
+  
+      <select id="left_select" class="options">
+        <option selected disabled>Street</option>  
+        <option>All Streets</option>
+        <option>Grant Street</option>
+        <option>Northwestern Street</option>
+        <option>State Street</option>
+      </select>
+     
+    <select class="options" id="sev">
+        <option selected disabled >Severity</option>
+         <option  value="all">All</option>
+        <option style="background: #8cf792" value="1"> Minor</option>
+        <option style="background: #defc58" value="2">Moderate</option>
+        <option style ="background: #8e0101" value ="3">Severe</option>
+    </select>
+    <select id="right_select" class="options">
+        <option selected disabled>Dates</option>
+    </select>
+ 
+    <div id="map"></div>
+    <script >
+    var map ;
+    //raw data for potholes
+    
+    // function routetest(){
+    //             var Pothole =[ {
+    //                 origin:  "40.426586, -86.910383",
+    //                 destination: "40.424090, -86.910367",
+    //                 sev: 7,
+    //                 travelMode: google.maps.TravelMode.WALKING
+    //             },{
+    //                 origin: "40.424004, -86.916770",
+    //                 destination: "40.424361, -86.922291",
+    //                 sev: 6,
+    //                 travelMode: google.maps.TravelMode.WALKING
+    //             }
+    //             ,{
+    //                 origin: "40.420283, -86.912122",
+    //                 destination: "40.420551, -86.919233",
+    //                 sev:3,
+    //                 travelMode: google.maps.TravelMode.WALKING
+    //             },
+    //             {
+    //                 origin: "40.428375, -86.910879",
+    //                 destination: "40.430918, -86.913726",
+    //                 sev:10,
+    //                 travelMode: google.maps.TravelMode.WALKING
+    //             }
+    //               ];
+    //             initialize2();
+    //             initialize(Pothole.length,Pothole);
+                
+    //             //  map.setCenter(new google.maps.LatLng(40.424214, -86.915676));
+    //             // map.setZoom(10);
+                    
+    //             }
+            
+            //  function routetest2(){
+            //     var Pothole =[ {
+            //         origin:  "40.431340, -86.919187",
+            //         destination: "40.431438, -86.914767",
+            //         sev: 2,
+            //         travelMode: google.maps.TravelMode.WALKING
+            //     },{
+            //         origin: "40.431675, -86.928024",
+            //         destination: "40.431466, -86.922320",
+            //         sev: 4,
+            //         travelMode: google.maps.TravelMode.WALKING
+            //     },{
+            //         origin: "40.420283, -86.912122",
+            //         destination: "40.420551, -86.919233",
+            //         sev:8,
+            //         travelMode: google.maps.TravelMode.WALKING
+            //     },
+            //     {
+            //         origin: "40.428375, -86.910879",
+            //         destination: "40.430918, -86.913726",
+            //         sev:7,
+            //         travelMode: google.maps.TravelMode.WALKING
+            //     }
+            //     ];
+            //      initialize2();
+            //     initialize(Pothole.length,Pothole);
+               
+            //     //      map.setCenter(new google.maps.LatLng(40.424214, -86.915676));
+            //     // map.setZoom(10);
+            //     }
+            
+           //event listener 
+    var selectBox = document.querySelector("#sev");
+    var click_count = 0;
+    selectBox.addEventListener("click",function (){
+        click_count ++;
+       
+        if(click_count == 2){
+        routSelect(selectBox.value);
+        
+        click_count=0;
+        }
+        event.stopPropagation();
+    },false);
+    document.querySelector("body").addEventListener("click", function(){click_count=0; },false);
+            
+          function initialize(length,Pothole) {
+              
+          
+                
+                
+                var colors = ["#8cf792","#defc58","#8e0101"];
+                var dirRenderer;
+                var dirService = new google.maps.DirectionsService();
+          //    dirRenderer.setMap(map);
+               
+                   
+                  dirRenderer = new google.maps.DirectionsRenderer({
+                  suppressMarkers: true,
+                  preserveViewport: true,
+                    polylineOptions: {
+                    strokeColor: colors[Pothole[length-1].sev-1],
+                   strokeWeight: 10,
+    }
+                });
+              var Marker_options={
+                  title: "blue",
+              };
+                var potholeobject = {origin: Pothole[length-1].origin,
+                    destination: Pothole[length-1].destination,
+                    travelMode: Pothole[length - 1].travelMode
+                };
+               
+                dirService.route(potholeobject, function(result, status) {
+                    if (status == google.maps.DirectionsStatus.OK) {
+                      
+                        dirRenderer.setDirections(result);
+                        
+                         var myRoute = result.routes[0].legs[0];
+                          var start_marker = new google.maps.Marker({
+                              title: 'Hello World!'
+                            });
+                          start_marker.setMap(map);
+                          start_marker.setPosition(myRoute.start_location);
+                          var end_marker = new google.maps.Marker({
+                              title: 'Hello World!'
+                            });
+                          end_marker.setMap(map);
+                          end_marker.setPosition(myRoute.end_location);
+                            console.log(myRoute.steps[0])
+                        
+                    }
+                });
+                
+               
+            
+               
+               
+               
+                
+                
+                dirRenderer.setMap(map);
+               
+                 length = length-1;
+                 if(length!=0){
+                     initialize(length,Pothole);
+                 }
+                
+           
+            }
+            
+            
+            
+            
+            function routSelect(input){
+                 var allPotholes = [
+                
+              {
+                     
+                    origin:  "40.426586, -86.910383",
+                    destination: "40.424090, -86.910367",
+                    sev: 2,
+                    travelMode: google.maps.TravelMode.WALKING
+                },{
+                    origin: "40.424004, -86.916770",
+                    destination: "40.424361, -86.922291",
+                    sev:3,
+                    travelMode: google.maps.TravelMode.WALKING
+                },
+                {
+                    origin: "40.431675, -86.928024",
+                    destination: "40.431466, -86.922320",
+                    sev:1,
+                    travelMode: google.maps.TravelMode.WALKING
+                },
+                {
+                    origin:  "40.431340, -86.919187",
+                    destination: "40.431438, -86.914767",
+                    sev:2,
+                    travelMode: google.maps.TravelMode.WALKING
+                },{
+                    origin: "40.420283, -86.912122",
+                    destination: "40.420551, -86.919233",
+                    sev:3,
+                    travelMode: google.maps.TravelMode.WALKING
+                },
+                {
+                    origin: "40.428375, -86.910879",
+                    destination: "40.430918, -86.913726",
+                    sev:2,
+                    travelMode: google.maps.TravelMode.WALKING
+                },
+                {
+                    origin: "40.425726, -86.919155",
+                    destination: "40.429474, -86.919233",
+                    sev:3,
+                    travelMode: google.maps.TravelMode.WALKING
+                },
+                {
+                    origin:  "40.424016, -86.909551",
+                    destination: "40.422962, -86.906193",
+                    sev:1,
+                    travelMode: google.maps.TravelMode.WALKING
+                }
+                
+                
+                ]
+                var Potholes = new Array();
+                var pot_count = 0;
+                if(input == "all"){
+                initialize2();
+                initialize(allPotholes.length, allPotholes)
+                }
+                else{
+                    
+                    for(var i = 0;i<allPotholes.length;i++){
+                      
+                        if(allPotholes[i].sev == input){
+                            Potholes[pot_count] = allPotholes[i];
+                            pot_count++;
+                        }
+                    }
+                initialize2();
+                
+                initialize(Potholes.length, Potholes)
+                }
+                
+            }
+            
+            
+            
+            
+            /*
+             var allPotholes = [
+                
+              {
+                    origin:  "40.426586, -86.910383",
+                    destination: "40.424090, -86.910367",
+                    sev: 1,
+                    travelMode: google.maps.TravelMode.WALKING
+                },{
+                    origin: "40.424004, -86.916770",
+                    destination: "40.424361, -86.922291",
+                    sev:5,
+                    travelMode: google.maps.TravelMode.WALKING
+                },
+                {
+                    origin: "40.431675, -86.928024",
+                    destination: "40.431466, -86.922320",
+                    sev:10,
+                    travelMode: google.maps.TravelMode.WALKING
+                },
+                {
+                    origin:  "40.431340, -86.919187",
+                    destination: "40.431438, -86.914767",
+                    sev:8,
+                    travelMode: google.maps.TravelMode.WALKING
+                }, 
+                
+                 {
+                    origin:  "40.426024, -86.905581",
+                    destination: "40.426024, -86.905511",
+                    sev: 5,
+                    travelMode: google.maps.TravelMode.WALKING
+                },{
+                    origin: "40.424004, -86.916770",
+                    destination: "40.424361, -86.922291",
+                    sev:4,
+                    travelMode: google.maps.TravelMode.WALKING
+                },
+                {
+                    origin: "40.428375, -86.910879",
+                    destination: "40.430918, -86.913726",
+                    sev:7,
+                    travelMode: google.maps.TravelMode.WALKING
+                },
+                {
+                    origin:  "40.424016, -86.909551",
+                    destination: "40.422962, -86.906193",
+                    sev:8,
+                    travelMode: google.maps.TravelMode.WALKING
+                }, */
+               function initialize2() {
+                // init map
+                var myOptions = {
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                       center: {lat: 40.424214, lng: -86.915676},
+          zoom: 15,
+            
+         
+                };
+                
+                
+                 map = new google.maps.Map(document.getElementById("map"), myOptions);
+               // initialize(allPotholes.length, allPotholes);
+          
+      }
+            
+            
+    
+     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdOlsUiADWmvISughPQMBKuqmC-ufbnLg"
+    async defer></script>
+  </body>
+</html>

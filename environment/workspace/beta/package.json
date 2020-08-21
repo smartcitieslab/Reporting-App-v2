@@ -1,0 +1,17 @@
+{
+  "name": "smart_city",
+  "version": "1.0.0",
+  "description": "one page project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Miguel Kulisic",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "ejs": "^2.5.7",
+    "express": "^4.15.4",
+    "html": "^1.0.0"
+  }
+}

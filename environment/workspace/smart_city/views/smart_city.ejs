@@ -1,0 +1,96 @@
+<html>
+
+<head>
+    <title>Smart City</title>
+    <!--References to the public directory-->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="smart_city.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+</head>
+
+<body onload="refresh(1)">
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                <p>Purdue EPICS</p>
+            </div>
+            <div class="col-sm-8">
+                <h1 class="h1">West Lafayette <i class="fa fa-map" aria-hidden="true"></i> Smart City</h1>
+            </div>
+            <div class="col-sm-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="checkbox">
+                            <label>
+                                <input checked="true" id="App_check" type="checkbox" value="">App Data
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="checkbox">
+                            <label>
+                                <input id="Data_A_check" type="checkbox" value="">Data Analisys Data
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="checkbox">
+                            <label>
+                                <input id="All_Data" type="checkbox" value="">All Data
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<button onclick="change_mode()">Specific data</button>-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    <select id="street_select" class="custom-select">
+
+                        <option selected disabled value="all">Street</i>
+                        </option>
+                        <option value="all">All Streets</option>
+                    </select>
+
+                </div>
+                <div class="col-sm-3">
+                    <select class="custom-select" id="sev">
+                        <option selected disabled value="all">Severity</i>
+                        </option>
+                        <option value="all">All Severities</option>
+                        <option style="background: #8cf792" value="1"> Minor</option>
+                        <option style="background: #defc58" value="2">Moderate</option>
+                        <option style="background: #8e0101  " value="3">Severe</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <select id="date_select" class="custom-select">
+                        <option disabled selected value="all">From Data: </i>
+                        </option>
+                        <option value="all">All Dates</option>
+                    </select>
+
+                </div>
+                <div class="col-sm-3">
+                    <select id="up_to_date" class="custom-select">
+                        <option disabled selected value="all">To Date: </i>
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="map"></div>
+
+    <script>
+    </script>
+    <script type="text/javascript" src="smart_city.js"></script>
+    <!--Script for the map-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdOlsUiADWmvISughPQMBKuqmC-ufbnLg" async defer></script>
+</body>
+
+</html>
